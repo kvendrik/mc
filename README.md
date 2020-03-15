@@ -1,3 +1,4 @@
+```
 Usage: mc <command_to_memoize>
 Memoizes the output of a given command.
 
@@ -10,3 +11,4 @@ Flags
 
 Notes
   Stores a cache of memoized commands in the home folder.
+```

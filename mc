@@ -39,7 +39,7 @@ for argument in "${@:1}"; do
 done
 
 if [ -z "$command" ]; then
-  cat "$(dirname "$0")/README.md"
+  cat "$(dirname "$0")/README.md" | tr -d '`'
   exit 1
 fi
 
