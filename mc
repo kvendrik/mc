@@ -38,7 +38,7 @@ for argument in "${@:1}"; do
   command+=" $argument"
 done
 
-if [ -z "$command" ]; then
+if [ -z "$command" ] || [[ $* == *--help* ]] || [[ $* == *-h* ]]; then
   cat "$(dirname "$0")/README.md" | tr -d '`'
   exit 1
 fi
