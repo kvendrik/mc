@@ -1,4 +1,3 @@
-```
 Usage: mc <command_to_memoize>
 Memoizes the output of a given command.
 
@@ -8,4 +7,6 @@ Commands
 Flags
   --update | -u             Execute the command and update the cache with the new output
   --flush | -f              Flush the cache
-```
+
+Notes
+  Stores a cache of memoized commands in the home folder.

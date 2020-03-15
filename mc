@@ -39,7 +39,7 @@ for argument in "${@:1}"; do
 done
 
 if [ -z "$command" ]; then
-  echo 'Usage: mc <command_to_execute>'
+  cat "$(dirname "$0")/README.md"
   exit 1
 fi
 
