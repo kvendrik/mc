@@ -10,7 +10,7 @@ Flags
   --flush | -f              Flush the cache
 
 Notes
-  - Stores a cache of memoized command outputs in the home folder.
+  - Stores a cache of memoized command outputs in the home folder
   - Caches the command under the command string and the current directory path
 
 Dependencies
