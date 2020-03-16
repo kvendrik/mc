@@ -1,5 +1,5 @@
 ```
-Usage: mc <command_to_memoize>
+Usage: mc [<flags>] <command_to_memoize>
 Memoizes the output of a given command.
 
 Commands
@@ -10,5 +10,5 @@ Flags
   --flush | -f              Flush the cache
 
 Notes
-  Stores a cache of memoized commands in the home folder.
+  Stores a cache of memoized command outputs in the home folder.
 ```
