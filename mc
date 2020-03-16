@@ -4,10 +4,10 @@ CACHE_REGISTER_PATH="$HOME/.mc_cache"
 CACHE_INDEX_PATH="$CACHE_REGISTER_PATH/.mc_index.json"
 
 function get_cache_id() {
-  local cmd cache_id
+  local cmd
   cmd="$1"
-  cache_id="$(jq ".[\"$cmd\"]" "$CACHE_INDEX_PATH")"
-  echo $cache_id | grep -Eo [^\"]+
+  current_path="$(pwd)"
+  jq ".[\"$cmd:$current_path\"]" "$CACHE_INDEX_PATH" | grep -Eo [^\"]+
 }
 
 function execute_command() {
@@ -18,7 +18,7 @@ function execute_command() {
   echo $output
 
   cache_uuid="$([ -z "$2" ] && echo "$(uuidgen)" || echo "$2")"
-  new_index="$(jq ".[\"$cmd\"] = \"$cache_uuid\"" "$CACHE_INDEX_PATH")"
+  new_index="$(jq ".[\"$cmd:$(pwd)\"] = \"$cache_uuid\"" "$CACHE_INDEX_PATH")"
   echo "$new_index" > "$CACHE_INDEX_PATH"
 
   echo "$output" > "$CACHE_REGISTER_PATH/$cache_uuid.txt"
@@ -36,7 +36,7 @@ for argument in "${@:1}"; do
   fi
 
   if [ "$command_string_started" -eq 1 ]; then
-    command+=" $argument"
+    command+="$argument "
     continue
   fi
 
