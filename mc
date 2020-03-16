@@ -1,27 +1,23 @@
 #!/usr/bin/env bash
 
 CACHE_REGISTER_PATH="$HOME/.mc_cache"
-CACHE_INDEX_PATH="$CACHE_REGISTER_PATH/.mc_index.json"
 
 function get_cache_id() {
   local cmd
   cmd="$1"
   current_path="$(pwd)"
-  jq ".[\"$cmd:$current_path\"]" "$CACHE_INDEX_PATH" | grep -Eo [^\"]+
+  md5 -qs "$cmd$current_path"
 }
 
 function execute_command() {
-  local cmd
+  local cmd log_path
   cmd="$1"
+  log_path="$2"
 
   output="$(eval "$cmd")"
   echo $output
 
-  cache_uuid="$([ -z "$2" ] && echo "$(uuidgen)" || echo "$2")"
-  new_index="$(jq ".[\"$cmd:$(pwd)\"] = \"$cache_uuid\"" "$CACHE_INDEX_PATH")"
-  echo "$new_index" > "$CACHE_INDEX_PATH"
-
-  echo "$output" > "$CACHE_REGISTER_PATH/$cache_uuid.txt"
+  echo "$output" > "$log_path"
 }
 
 flag_help=0
@@ -59,23 +55,18 @@ if [ -z "$command" ] || [ "$flag_help" -eq 1 ]; then
   exit 1
 fi
 
+cache_id="$(get_cache_id "$command")"
+log_path="$CACHE_REGISTER_PATH/$cache_id.log"
+
 if [ ! -d "$CACHE_REGISTER_PATH" ]; then
   mkdir "$CACHE_REGISTER_PATH"
-  echo "{}" > "$CACHE_INDEX_PATH"
-  execute_command "$command"
+  execute_command "$command" "$log_path"
   exit 0
 fi
 
-cache_id="$(get_cache_id "$command")"
-
-if [[ "$cache_id" == 'null' ]]; then
-  execute_command "$command"
+if [ ! -f "$log_path" ] || [ "$flag_update" -eq 1 ]; then
+  execute_command "$command" "$log_path"
   exit 0
 fi
 
-if [ "$flag_update" -eq 1 ]; then
-  execute_command "$command" "$cache_id"
-  exit 0
-fi
-
-cat "$CACHE_REGISTER_PATH/$cache_id.txt"
+cat "$log_path"
