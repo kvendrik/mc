@@ -66,7 +66,7 @@ if [ "$flag_flush" -eq 1 ]; then
 fi
 
 if [ -z "$command" ] || [ "$flag_help" -eq 1 ]; then
-  cat "$(dirname "$0")/README.md" | tr -d '`'
+  sed -n "/\`\`\`/,/\`\`\`/p" "$(dirname "$0")/README.md" | tr -d '`'
   exit 1
 fi
 
