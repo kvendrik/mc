@@ -1,3 +1,5 @@
+![](demo.gif)
+
 ```
 Usage: mc [<flags>] <command_to_memoize>
 Memoizes the output of a given command.
