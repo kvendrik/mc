@@ -1,5 +1,10 @@
-![](demo.gif)
+# Memoize Command
+### Memoizes the output of a given command
 
+#### Demo
+![Command line in which the first command run takes 5 seconds and subsequential runs take less than 1](demo.gif)
+
+#### Help
 ```
 Usage: mc [<flags>] <command_to_memoize>
 Memoizes the output of a given command.
