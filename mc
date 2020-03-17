@@ -3,10 +3,22 @@
 CACHE_REGISTER_PATH="$HOME/.mc_cache"
 
 function get_cache_id() {
-  local cmd
+  local cmd project_specific hash_string project_path branch_name
   cmd="$1"
-  current_path="$(pwd)"
-  md5 -qs "$cmd$current_path"
+  project_specific="$2"
+  hash_string="$cmd"
+
+  if [ "$project_specific" -eq 1 ]; then
+    if git rev-parse --show-toplevel > /dev/null; then
+      project_path="$(git rev-parse --show-toplevel)"
+      branch_name="$(git rev-parse --abbrev-ref HEAD)"
+      hash_string="$hash_string:$project_path:$branch_name"
+    else
+      hash_string="$hash_string:$(pwd)"
+    fi
+  fi
+
+  md5 -qs "$hash_string"
 }
 
 function execute_command() {
@@ -23,6 +35,7 @@ function execute_command() {
 flag_help=0
 flag_flush=0
 flag_update=0
+flag_project=0
 command_string_started=0
 command=""
 
@@ -42,6 +55,8 @@ for argument in "${@:1}"; do
     flag_update=1
   elif [[ "$argument" == "--flush" ]] || [[ "$argument" == "-f" ]]; then
     flag_flush=1
+  elif [[ "$argument" == "--project" ]] || [[ "$argument" == "-p" ]]; then
+    flag_project=1
   fi
 done
 
@@ -55,7 +70,7 @@ if [ -z "$command" ] || [ "$flag_help" -eq 1 ]; then
   exit 1
 fi
 
-cache_id="$(get_cache_id "$command")"
+cache_id="$(get_cache_id "$command" $flag_project)"
 log_path="$CACHE_REGISTER_PATH/$cache_id.log"
 
 if [ ! -d "$CACHE_REGISTER_PATH" ]; then
