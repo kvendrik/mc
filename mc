@@ -25,11 +25,8 @@ function execute_command() {
   local cmd log_path
   cmd="$1"
   log_path="$2"
-
-  output="$(eval "$cmd")"
-  echo $output
-
-  echo "$output" > "$log_path"
+  eval "$cmd" > "$log_path"
+  cat "$log_path"
 }
 
 flag_help=0
